@@ -1,14 +1,23 @@
 import processing.core.PApplet;
+import processing.core.PImage;
 
+
+
+/**
+ * This is noah's file
+ */
 public class Sketch1 extends PApplet {
 	
-	
+  PImage imgBackground;
+  PImage imgPlayerCar;
+
+
   /**
    * Called once at the beginning of execution, put your size all in this method
    */
   public void settings() {
 	// put your size call here
-    size(400, 400);
+    size(500, 500);
   }
 
   /** 
@@ -17,6 +26,10 @@ public class Sketch1 extends PApplet {
    */
   public void setup() {
     background(210, 255, 173);
+
+    imgBackground  = loadImage("background-1_0.png");
+    imgPlayerCar = loadImage("car_red_1.png");
+
   }
 
   /**
@@ -24,12 +37,14 @@ public class Sketch1 extends PApplet {
    */
   public void draw() {
 	  
-	// sample code, delete this stuff
-    stroke(128);
-    line(150, 25, 270, 350);  
+    imgBackground.resize(500, 500);
+    image(imgBackground, 0, 0);
+    
+    image(imgPlayerCar, 100, 100);
 
-    stroke(255);
-    line(50, 125, 70, 50);  
+
+
+
   }
   
   // define other methods down here.
