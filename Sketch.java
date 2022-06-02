@@ -21,6 +21,23 @@ public class Sketch extends PApplet {
   final int GAMESCREEN = 2;
   int screenState = MENUSCREEN;
 
+  float fltGunX = 12;
+  float fltGunY = 20;
+  boolean boolRightArrowPressed;
+  boolean boolLeftArrowPressed;
+  boolean boolSpacePressed;
+  int lives  = 3; 
+  float[] bulletX = new float[4];
+  float[] bulletY = new float[4];
+  boolean[] bulletActive = new boolean[4];
+
+
+
+  PImage imgTank;
+  PImage imgBullet;
+  PImage imgLives;
+
+
 
   /**
    * Called once at the beginning of execution, put your size all in this method
@@ -41,6 +58,19 @@ public class Sketch extends PApplet {
     imgPlayerCar = loadImage("car_red_1.png");
     imgStartscreen = loadImage("Startscreen.png");
     imgInstructionscreen = loadImage("Instructionscreen.png");
+
+    imgLives = loadImage("tag_shield.png");
+    imgTank = loadImage("tank_green.png");
+    imgBullet = loadImage("bullet.png");
+
+
+    for(int i = 0; i < bulletY.length; i++) {
+      bulletY[i] = 55;
+    }
+
+    for(int i = 0; i < bulletActive.length; i++) {
+      bulletActive[i] = false;
+    }
 
   }
 
@@ -82,7 +112,49 @@ public class Sketch extends PApplet {
   public void drawGame(){
     imgGameBackground.resize(500, 500);
     image(imgGameBackground, 0, 0);
-    
+    image(imgTank, fltGunX, fltGunY);
+
+    for(int i = 0; i < bulletX.length; i++) {
+
+      if(bulletActive[i] == true) {
+        image(imgBullet, bulletX[i], bulletY[i]);
+        bulletY[i]+=3;
+
+        if(bulletY[i] > height) {
+          bulletY[i] = 50;
+          bulletActive[i] = false;
+        }
+      } else {
+        
+      }
+    }
+
+    for(int i = 0; i < lives; i++) {
+      imgLives.resize(75, 75);
+      image(imgLives, 350 + 30*i, 0);
+    }
+
+
+    if (boolRightArrowPressed) {
+      fltGunX = fltGunX + 2;
+    }
+
+    if(boolLeftArrowPressed) {
+     fltGunX = fltGunX - 2;
+    }
+
+
+
+    if (fltGunX > 350) {
+      fltGunX = 350;
+    } 
+    if(fltGunX < 80){
+      fltGunX = 80;
+    }
+   
+
+
+
     if (boolRightPressed) {
       fltPlayerX = fltPlayerX + 10;
     } 
@@ -107,6 +179,16 @@ public class Sketch extends PApplet {
     if(key == 'a') {
       boolLeftPressed = true;
     }
+
+
+    if(keyCode == RIGHT) {
+      boolRightArrowPressed = true;
+    }
+
+    if(keyCode == LEFT) {
+      boolLeftArrowPressed = true; 
+    }
+
   }
 
   public void keyReleased(){
@@ -116,5 +198,38 @@ public class Sketch extends PApplet {
     else if(key == 'a') {
       boolLeftPressed = false;
     }
+
+    if(keyCode == RIGHT ) {
+      boolRightArrowPressed = false;
+    }
+
+    if(key == ' ') {
+      boolSpacePressed = false; 
+    }
+
+    if(keyCode == LEFT) {
+      boolLeftArrowPressed = false;
+    }
+
+
   }
+
+  public void keyTyped() {
+    if(key == ' ') {
+      
+
+      for(int i = 0; i < bulletActive.length; i++) {
+        if(bulletActive[i] == false) {
+          bulletActive[i] = true;
+          bulletX[i] = fltGunX + 15;
+          break;
+        }
+      }
+
+
+
+    }
+  }
+
+
 }
