@@ -48,9 +48,6 @@ public class Sketch2 extends PApplet {
    * Called repeatedly, anything drawn to the screen goes here
    */
   public void draw() {
-	
-
-
     if (screenState == MENUSCREEN) {
       drawMenu();
     } else if (screenState == INSTRUCTIONSCREEN) {
