@@ -8,13 +8,18 @@ import processing.core.PImage;
  */
 public class Sketch2 extends PApplet {
 	
-  PImage imgBackground;
+  PImage imgGameBackground;
   PImage imgPlayerCar;
+  PImage imgStartscreen;
+  PImage imgInstructionscreen;
   float fltPlayerX = 250;
   float fltPlayerY = 350;
   boolean boolRightPressed = false;
   boolean boolLeftPressed = false;
-  
+  final int MENUSCREEN = 0;
+  final int INSTRUCTIONSCREEN = 1;
+  final int GAMESCREEN = 2;
+  int screenState = MENUSCREEN;
 
 
   /**
@@ -30,10 +35,12 @@ public class Sketch2 extends PApplet {
    * values here i.e background, stroke, fill etc.
    */
   public void setup() {
-    background(210, 255, 173);
+    background(0, 0, 0);
 
-    imgBackground  = loadImage("background-1_0.png");
+    imgGameBackground  = loadImage("background-1_0.png");
     imgPlayerCar = loadImage("car_red_1.png");
+    imgStartscreen = loadImage("Startscreen.png");
+    imgInstructionscreen = loadImage("Instructionscreen.png");
 
   }
 
@@ -41,9 +48,43 @@ public class Sketch2 extends PApplet {
    * Called repeatedly, anything drawn to the screen goes here
    */
   public void draw() {
-	  
-    imgBackground.resize(500, 500);
-    image(imgBackground, 0, 0);
+	
+
+
+    if (screenState == MENUSCREEN) {
+      drawMenu();
+    } else if (screenState == INSTRUCTIONSCREEN) {
+      drawInstruction();
+    } else if (screenState == GAMESCREEN) {
+      drawGame();
+    } else {
+      System.out.println("Something went wrong!");
+    }
+  }
+
+  public void drawInstruction(){
+    imgInstructionscreen.resize(400,500);
+    image(imgInstructionscreen, 50, 0);
+    if (keyPressed){
+      if(key == 'c') {
+        screenState = GAMESCREEN;
+      } 
+    }
+  }
+
+  public void drawMenu(){
+    imgStartscreen.resize(400,500);
+    image(imgStartscreen, 50, 0);
+    if (mousePressed){
+      if (dist(250, 335, mouseX, mouseY) < 105){
+      screenState = INSTRUCTIONSCREEN;
+      }
+    }
+  }
+
+  public void drawGame(){
+    imgGameBackground.resize(500, 500);
+    image(imgGameBackground, 0, 0);
     
     if (boolRightPressed) {
       fltPlayerX = fltPlayerX + 10;
