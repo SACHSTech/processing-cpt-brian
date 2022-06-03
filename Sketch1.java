@@ -27,12 +27,13 @@ public class Sketch1 extends PApplet {
   boolean boolLeftArrowPressed;
   boolean boolSpacePressed;
   int lives  = 3; 
+  int bulletcount = 4;
   float[] bulletX = new float[4];
   float[] bulletY = new float[4];
   boolean[] bulletActive = new boolean[4];
 
 
-
+  PImage imgBulletIndicator;
   PImage imgTank;
   PImage imgBullet;
   PImage imgLives;
@@ -54,6 +55,7 @@ public class Sketch1 extends PApplet {
   public void setup() {
     background(0, 0, 0);
 
+    imgBulletIndicator = loadImage("bulletindicator.png");
     imgGameBackground  = loadImage("background-1_0.png");
     imgPlayerCar = loadImage("car_red_1.png");
     imgStartscreen = loadImage("Startscreen.png");
@@ -117,12 +119,12 @@ public class Sketch1 extends PApplet {
     for(int i = 0; i < bulletActive.length; i++) {
 
       if(bulletActive[i] == true) {
-        if(dist(bulletX[i], bulletY[i]-50, fltPlayerX, fltPlayerY) <=50) {
+        if(dist(bulletX[i]-15, bulletY[i]-30, fltPlayerX, fltPlayerY) <=30) {
           bulletY[i] = 50;
 
           bulletActive[i] = false;
+          bulletcount++;
           lives--;
-          
 
         } else {
           continue;
@@ -143,6 +145,7 @@ public class Sketch1 extends PApplet {
         if(bulletY[i] > height) {
           bulletY[i] = 50;
           bulletActive[i] = false;
+          bulletcount++;
         }
       } else { 
       }
@@ -151,6 +154,12 @@ public class Sketch1 extends PApplet {
     for(int i = 0; i < lives; i++) {
       imgLives.resize(75, 75);
       image(imgLives, 350 + 30*i, 0);
+    }
+
+    
+
+    for(int i = 0; i < bulletcount; i++) {
+      image(imgBulletIndicator, 400 + 20*i, 20);
     }
 
     if (boolRightArrowPressed) {
@@ -212,8 +221,6 @@ public class Sketch1 extends PApplet {
     if(keyCode == LEFT) {
       boolLeftArrowPressed = false;
     }
-
-
   }
 
   public void keyTyped() {
@@ -222,6 +229,7 @@ public class Sketch1 extends PApplet {
         if(bulletActive[i] == false) {
           bulletActive[i] = true;
           bulletX[i] = fltGunX + 15;
+          bulletcount--;
           break;
         }
       }
