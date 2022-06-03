@@ -1,18 +1,26 @@
-import java.util.Random;
-
 import processing.core.PApplet;
 import processing.core.PImage;
 
 
-
+ 
 /**
  * This is noah's file
  */
 public class Sketch1 extends PApplet {
 	
+  PImage imgGameBackground;
+  PImage imgPlayerCar;
+  PImage imgStartscreen;
+  PImage imgInstructionscreen;
+  float fltPlayerX = 250;
+  float fltPlayerY = 350;
+  boolean boolRightPressed = false;
+  boolean boolLeftPressed = false;
+  final int MENUSCREEN = 0;
+  final int INSTRUCTIONSCREEN = 1;
+  final int GAMESCREEN = 2;
+  int screenState = MENUSCREEN;
 
-  float[] carX = new float[2];
-  float[] carY = new float[2];
   float fltGunX = 12;
   float fltGunY = 20;
   boolean boolRightArrowPressed;
@@ -25,11 +33,10 @@ public class Sketch1 extends PApplet {
 
 
 
-  PImage imgBackground;
-  PImage imgPlayerCar;
   PImage imgTank;
   PImage imgBullet;
   PImage imgLives;
+
 
 
   /**
@@ -45,114 +52,140 @@ public class Sketch1 extends PApplet {
    * values here i.e background, stroke, fill etc.
    */
   public void setup() {
-    background(210, 255, 173);
+    background(0, 0, 0);
 
-    imgBackground  = loadImage("background-1_0.png");
-    imgPlayerCar = loadImage("tag_shield.png");
+    imgGameBackground  = loadImage("background-1_0.png");
+    imgPlayerCar = loadImage("car_red_1.png");
+    imgStartscreen = loadImage("Startscreen.png");
+    imgInstructionscreen = loadImage("Instructionscreen.png");
     imgLives = loadImage("tag_shield.png");
     imgTank = loadImage("tank_green.png");
     imgBullet = loadImage("bullet.png");
 
-
-
-    for (int i = 0; i < carX.length; i++) {
-
-      carX[i] = 120 + random(height-200);
-    }
-    for(int i = 0; i < carY.length; i++) {
-      carY[i] = random(width);
-    }
-
     for(int i = 0; i < bulletY.length; i++) {
       bulletY[i] = 55;
     }
-
     for(int i = 0; i < bulletActive.length; i++) {
       bulletActive[i] = false;
     }
-   
-
-
-
   }
 
   /**
    * Called repeatedly, anything drawn to the screen goes here
    */
   public void draw() {
+    if (screenState == MENUSCREEN) {
+      drawMenu();
+    } else if (screenState == INSTRUCTIONSCREEN) {
+      drawInstruction();
+    } else if (screenState == GAMESCREEN) {
+      drawGame();
+    } else {
+      System.out.println("Something went wrong!");
+    }
+  }
 
-   
+  public void drawInstruction(){
+    imgInstructionscreen.resize(400,500);
+    image(imgInstructionscreen, 50, 0);
+    if (keyPressed){
+      if(key == 'c') {
+        screenState = GAMESCREEN;
+      } 
+    }
+  }
 
-    imgBackground.resize(500, 500);
-    image(imgBackground, 0, 0);
-    
-   
+  public void drawMenu(){
+    imgStartscreen.resize(400,500);
+    image(imgStartscreen, 50, 0);
+    if (mousePressed){
+      if (dist(250, 335, mouseX, mouseY) < 105){
+      screenState = INSTRUCTIONSCREEN;
+      }
+    }
+  }
+
+  public void drawGame(){
+    imgGameBackground.resize(500, 500);
+    image(imgGameBackground, 0, 0);
     image(imgTank, fltGunX, fltGunY);
+    imgPlayerCar.resize(50, 100);
+    image(imgPlayerCar, fltPlayerX, fltPlayerY);
 
-    //all 3 shoot at once 
 
-    
+
+    for(int i = 0; i < bulletActive.length; i++) {
+
+      if(bulletActive[i] == true) {
+        if(dist(bulletX[i], bulletY[i]-50, fltPlayerX, fltPlayerY) <=50) {
+          bulletY[i] = 50;
+
+          bulletActive[i] = false;
+          lives--;
+          
+
+        } else {
+          continue;
+        }
+      }else {
+        continue;
+      }
+
+      
+    }
 
 
     for(int i = 0; i < bulletX.length; i++) {
-
       if(bulletActive[i] == true) {
         image(imgBullet, bulletX[i], bulletY[i]);
-        bulletY[i]+=3;
+        bulletY[i]+=5;
 
         if(bulletY[i] > height) {
           bulletY[i] = 50;
           bulletActive[i] = false;
         }
-      } else {
-        
+      } else { 
       }
     }
-   
-
-
-    for(int i = 0; i < carY.length; i++) {
-
-      image(imgPlayerCar, carX[i], carY[i]);
-      carY[i]++;
-
-      if(carY[i] > height) {
-        carY[i] = 0;
-        carX[i] = 120 + random(width-200);
-      }
-
-
-    }
-    
 
     for(int i = 0; i < lives; i++) {
       imgLives.resize(75, 75);
       image(imgLives, 350 + 30*i, 0);
     }
 
-
     if (boolRightArrowPressed) {
       fltGunX = fltGunX + 2;
     }
-
     if(boolLeftArrowPressed) {
      fltGunX = fltGunX - 2;
     }
-
-
-
     if (fltGunX > 350) {
       fltGunX = 350;
     } 
     if(fltGunX < 80){
       fltGunX = 80;
     }
-
+    if (boolRightPressed) {
+      fltPlayerX = fltPlayerX + 3;
+    } 
+    if(boolLeftPressed){
+      fltPlayerX = fltPlayerX - 3;
+      }
+    if(fltPlayerX > 350){
+      fltPlayerX = 350;
+    }
+    if(fltPlayerX < 80){
+      fltPlayerX = 80;
+    }
   }
 
-
   public void keyPressed() {
-
+    if(key == 'd') {
+      boolRightPressed = true;
+    } 
+    if(key == 'a') {
+      boolLeftPressed = true;
+    }
     if(keyCode == RIGHT) {
       boolRightArrowPressed = true;
     }
@@ -160,19 +193,31 @@ public class Sketch1 extends PApplet {
     if(keyCode == LEFT) {
       boolLeftArrowPressed = true; 
     }
+  }
 
-  
+  public void keyReleased(){
+    if(key == 'd') {
+      boolRightPressed = false;
+    }
+    else if(key == 'a') {
+      boolLeftPressed = false;
+    }
+
+    if(keyCode == RIGHT ) {
+      boolRightArrowPressed = false;
+    }
+    if(key == ' ') {
+      boolSpacePressed = false; 
+    }
+    if(keyCode == LEFT) {
+      boolLeftArrowPressed = false;
+    }
 
 
-
-
-  
   }
 
   public void keyTyped() {
     if(key == ' ') {
-      
-
       for(int i = 0; i < bulletActive.length; i++) {
         if(bulletActive[i] == false) {
           bulletActive[i] = true;
@@ -180,28 +225,6 @@ public class Sketch1 extends PApplet {
           break;
         }
       }
-
-
-
     }
   }
-
-
-  public void keyReleased() {
-    if(keyCode == RIGHT ) {
-      boolRightArrowPressed = false;
-    }
-
-    if(key == ' ') {
-      boolSpacePressed = false; 
-    }
-
-    if(keyCode == LEFT) {
-      boolLeftArrowPressed = false;
-    }
-
-  }
-
-
-  
 }
