@@ -7,7 +7,8 @@ import processing.core.PImage;
  * This is noah's file
  */
 public class Sketch2 extends PApplet {
-	
+	 
+  PImage imgNoBulletPowerup;
   PImage imgGameBackground;
   PImage imgPlayerCar;
   PImage imgStartscreen;
@@ -16,10 +17,34 @@ public class Sketch2 extends PApplet {
   float fltPlayerY = 350;
   boolean boolRightPressed = false;
   boolean boolLeftPressed = false;
+  boolean boolRemoveBulletPowerupSpawn = true;
+  boolean boolRemoveBulletPowerupPickup = false;
+  boolean boolRemoveBulletPowerupActive = false;
   final int MENUSCREEN = 0;
   final int INSTRUCTIONSCREEN = 1;
   final int GAMESCREEN = 2;
   int screenState = MENUSCREEN;
+
+  float fltGunX = 12;
+  float fltGunY = 20;
+  boolean boolRightArrowPressed;
+  boolean boolLeftArrowPressed;
+  boolean boolSpacePressed;
+  int lives = 1; 
+  float[] bulletX = new float[4];
+  float[] bulletY = new float[4];
+  boolean[] bulletActive = new boolean[4];
+
+  int PowerUpSpeed = 3;
+
+  float restrictedWidth = random(270) + 80;
+  float PowerUpX = restrictedWidth;
+  int PowerUpY = 50;
+
+  PImage imgTank;
+  PImage imgBullet;
+  PImage imgLives;
+
 
 
   /**
@@ -41,7 +66,17 @@ public class Sketch2 extends PApplet {
     imgPlayerCar = loadImage("car_red_1.png");
     imgStartscreen = loadImage("Startscreen.png");
     imgInstructionscreen = loadImage("Instructionscreen.png");
+    imgLives = loadImage("tag_shield.png");
+    imgTank = loadImage("tank_green.png");
+    imgBullet = loadImage("bullet.png");
+    imgNoBulletPowerup = loadImage("NoBulletPowerup.png");
 
+    for(int i = 0; i < bulletY.length; i++) {
+      bulletY[i] = 55;
+    }
+    for(int i = 0; i < bulletActive.length; i++) {
+      bulletActive[i] = false;
+    }
   }
 
   /**
@@ -82,21 +117,74 @@ public class Sketch2 extends PApplet {
   public void drawGame(){
     imgGameBackground.resize(500, 500);
     image(imgGameBackground, 0, 0);
-    
-    if (boolRightPressed) {
-      fltPlayerX = fltPlayerX + 10;
-    } 
-    if(boolLeftPressed){
-      fltPlayerX = fltPlayerX - 10;
-      }
+    image(imgTank, fltGunX, fltGunY);
     imgPlayerCar.resize(50, 100);
     image(imgPlayerCar, fltPlayerX, fltPlayerY);
 
+    for(int i = 0; i < bulletX.length; i++) {
+      if(bulletActive[i] == true) {
+        image(imgBullet, bulletX[i], bulletY[i]);
+        bulletY[i]+=5;
+
+        if(bulletY[i] > height) {
+          bulletY[i] = 50;
+          bulletActive[i] = false;
+        }
+      } else { 
+      }
+    }
+
+    for(int i = 0; i < lives; i++) {
+      imgLives.resize(75, 75);
+      image(imgLives, 350 + 30*i, 0);
+    }
+
+    if (boolRightArrowPressed) {
+      fltGunX = fltGunX + 2;
+    }
+    if(boolLeftArrowPressed) {
+     fltGunX = fltGunX - 2;
+    }
+    if (fltGunX > 350) {
+      fltGunX = 350;
+    } 
+    if(fltGunX < 80){
+      fltGunX = 80;
+    }
+    if (boolRightPressed) {
+      fltPlayerX = fltPlayerX + 3;
+    } 
+    if(boolLeftPressed){
+      fltPlayerX = fltPlayerX - 3;
+      }
     if(fltPlayerX > 350){
       fltPlayerX = 350;
     }
     if(fltPlayerX < 80){
       fltPlayerX = 80;
+    }
+
+    if (boolRemoveBulletPowerupSpawn == true) {
+      imgNoBulletPowerup.resize(25, 25);
+      image(imgNoBulletPowerup, PowerUpX, PowerUpY);
+      PowerUpY += PowerUpSpeed;
+    }
+    if (PowerUpY > height){
+      boolRemoveBulletPowerupSpawn = false;
+      PowerUpY = 50;  
+    }
+
+    if (dist(PowerUpX - 25, PowerUpY, fltPlayerX, fltPlayerY) < 30){
+      boolRemoveBulletPowerupPickup = true;
+      boolRemoveBulletPowerupSpawn = false;
+      PowerUpY = 50;  
+    }
+
+    if (boolRemoveBulletPowerupActive == true){
+      for(int i = 0; i < bulletActive.length; i++) {
+        bulletActive[i] = false;
+        bulletY[i] = 50;
+      }
     }
   }
 
@@ -107,6 +195,17 @@ public class Sketch2 extends PApplet {
     if(key == 'a') {
       boolLeftPressed = true;
     }
+    if(key =='p' && boolRemoveBulletPowerupPickup == true) {
+        boolRemoveBulletPowerupActive = true;
+        boolRemoveBulletPowerupPickup = false;
+    }
+    if(keyCode == RIGHT) {
+      boolRightArrowPressed = true;
+    }
+
+    if(keyCode == LEFT) {
+      boolLeftArrowPressed = true; 
+    }
   }
 
   public void keyReleased(){
@@ -115,6 +214,32 @@ public class Sketch2 extends PApplet {
     }
     else if(key == 'a') {
       boolLeftPressed = false;
+    }
+
+    if(keyCode == RIGHT ) {
+      boolRightArrowPressed = false;
+    }
+    if(key == ' ') {
+      boolSpacePressed = false; 
+    }
+    if(keyCode == LEFT) {
+      boolLeftArrowPressed = false;
+    }
+    if(key =='p'){
+      boolRemoveBulletPowerupActive = false;
+    }
+
+  }
+
+  public void keyTyped() {
+    if(key == ' ') {
+      for(int i = 0; i < bulletActive.length; i++) {
+        if(bulletActive[i] == false) {
+          bulletActive[i] = true;
+          bulletX[i] = fltGunX + 15;
+          break;
+        }
+      }
     }
   }
 }
