@@ -138,6 +138,14 @@ public class Sketch1 extends PApplet {
       lives = 3;
       fltGunX = 250;
       fltPlayerX = 250;
+      for(int i = 0; i < bulletY.length; i++) {
+      bulletY[i] = 55;
+    }
+    for(int i = 0; i < bulletActive.length; i++) {
+      bulletActive[i] = false;
+    }
+    bulletcount = 4;
+  
     }
 
 
