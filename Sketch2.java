@@ -9,6 +9,7 @@ import processing.core.PImage;
 public class Sketch2 extends PApplet {
 	 
   PImage imgNoBulletPowerup;
+  PImage imgNoBulletPowerupIcon;
   PImage imgGameBackground;
   PImage imgPlayerCar;
   PImage imgStartscreen;
@@ -17,7 +18,7 @@ public class Sketch2 extends PApplet {
   float fltPlayerY = 350;
   boolean boolRightPressed = false;
   boolean boolLeftPressed = false;
-  boolean boolRemoveBulletPowerupSpawn = true;
+  boolean boolRemoveBulletPowerupSpawn = false;
   boolean boolRemoveBulletPowerupPickup = false;
   boolean boolRemoveBulletPowerupActive = false;
   final int MENUSCREEN = 0;
@@ -37,14 +38,15 @@ public class Sketch2 extends PApplet {
 
   int PowerUpSpeed = 3;
 
-  float restrictedWidth = random(270) + 80;
-  float PowerUpX = restrictedWidth;
+  float PowerUpX;
   int PowerUpY = 50;
 
   PImage imgTank;
   PImage imgBullet;
   PImage imgLives;
 
+  int savedTime;
+  int totalTime = 10000;
 
 
   /**
@@ -70,6 +72,7 @@ public class Sketch2 extends PApplet {
     imgTank = loadImage("tank_green.png");
     imgBullet = loadImage("bullet.png");
     imgNoBulletPowerup = loadImage("NoBulletPowerup.png");
+    imgNoBulletPowerupIcon = loadImage("NoBulletPowerupICON.png");
 
     for(int i = 0; i < bulletY.length; i++) {
       bulletY[i] = 55;
@@ -77,6 +80,8 @@ public class Sketch2 extends PApplet {
     for(int i = 0; i < bulletActive.length; i++) {
       bulletActive[i] = false;
     }
+
+    savedTime = millis();
   }
 
   /**
@@ -164,6 +169,16 @@ public class Sketch2 extends PApplet {
       fltPlayerX = 80;
     }
 
+    int passedTime = millis() - savedTime;
+
+
+    if (passedTime > totalTime){
+      PowerUpX = random(270) + 80;
+      System.out.println("now");
+      boolRemoveBulletPowerupSpawn = true;
+      savedTime = millis();
+    }
+
     if (boolRemoveBulletPowerupSpawn == true) {
       imgNoBulletPowerup.resize(25, 25);
       image(imgNoBulletPowerup, PowerUpX, PowerUpY);
@@ -178,6 +193,11 @@ public class Sketch2 extends PApplet {
       boolRemoveBulletPowerupPickup = true;
       boolRemoveBulletPowerupSpawn = false;
       PowerUpY = 50;  
+    }
+
+    if (boolRemoveBulletPowerupPickup){
+      imgNoBulletPowerupIcon.resize(50, 50);
+      image(imgNoBulletPowerupIcon, 425, 450);
     }
 
     if (boolRemoveBulletPowerupActive == true){
