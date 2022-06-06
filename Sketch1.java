@@ -19,23 +19,26 @@ public class Sketch1 extends PApplet {
   final int MENUSCREEN = 0;
   final int INSTRUCTIONSCREEN = 1;
   final int GAMESCREEN = 2;
+  final int TANKWINSCREEN = 3;
   int screenState = MENUSCREEN;
 
-  float fltGunX = 12;
-  float fltGunY = 20;
+  float fltGunX;
+  float fltGunY;
   boolean boolRightArrowPressed;
   boolean boolLeftArrowPressed;
   boolean boolSpacePressed;
   int lives  = 3; 
+  int bulletcount = 4;
   float[] bulletX = new float[4];
   float[] bulletY = new float[4];
   boolean[] bulletActive = new boolean[4];
 
 
-
+  PImage imgBulletIndicator;
   PImage imgTank;
   PImage imgBullet;
   PImage imgLives;
+  PImage imgTankWin;
 
 
 
@@ -54,6 +57,7 @@ public class Sketch1 extends PApplet {
   public void setup() {
     background(0, 0, 0);
 
+    imgBulletIndicator = loadImage("bulletindicator.png");
     imgGameBackground  = loadImage("background-1_0.png");
     imgPlayerCar = loadImage("car_red_1.png");
     imgStartscreen = loadImage("Startscreen.png");
@@ -61,6 +65,7 @@ public class Sketch1 extends PApplet {
     imgLives = loadImage("tag_shield.png");
     imgTank = loadImage("tank_green.png");
     imgBullet = loadImage("bullet.png");
+    imgTankWin = loadImage("TANKWIN.png");
 
     for(int i = 0; i < bulletY.length; i++) {
       bulletY[i] = 55;
@@ -80,8 +85,21 @@ public class Sketch1 extends PApplet {
       drawInstruction();
     } else if (screenState == GAMESCREEN) {
       drawGame();
-    } else {
+    } else if (screenState == TANKWINSCREEN){
+      drawTankWinScreen();
+    }
+     else {
       System.out.println("Something went wrong!");
+    }
+  }
+
+  public void drawTankWinScreen() {
+    imgTankWin.resize(400, 500);
+    image(imgTankWin, 50, 0);
+    if(keyPressed) {
+      if(key == 'c') {
+        screenState = GAMESCREEN;
+      }
     }
   }
 
@@ -90,7 +108,9 @@ public class Sketch1 extends PApplet {
     image(imgInstructionscreen, 50, 0);
     if (keyPressed){
       if(key == 'c') {
+        
         screenState = GAMESCREEN;
+        
       } 
     }
   }
@@ -108,21 +128,36 @@ public class Sketch1 extends PApplet {
   public void drawGame(){
     imgGameBackground.resize(500, 500);
     image(imgGameBackground, 0, 0);
+    
     image(imgTank, fltGunX, fltGunY);
     imgPlayerCar.resize(50, 100);
     image(imgPlayerCar, fltPlayerX, fltPlayerY);
 
+    if(lives == 0 ) {
+      screenState = TANKWINSCREEN;
+      lives = 3;
+      fltGunX = 250;
+      fltPlayerX = 250;
+      for(int i = 0; i < bulletY.length; i++) {
+      bulletY[i] = 55;
+    }
+    for(int i = 0; i < bulletActive.length; i++) {
+      bulletActive[i] = false;
+    }
+    bulletcount = 4;
+  
+    }
 
 
     for(int i = 0; i < bulletActive.length; i++) {
 
       if(bulletActive[i] == true) {
-        if(dist(bulletX[i], bulletY[i]-50, fltPlayerX, fltPlayerY) <=50) {
+        if(dist(bulletX[i]-15, bulletY[i]-30, fltPlayerX, fltPlayerY) <=30) {
           bulletY[i] = 50;
 
           bulletActive[i] = false;
+          bulletcount++;
           lives--;
-          
 
         } else {
           continue;
@@ -143,6 +178,7 @@ public class Sketch1 extends PApplet {
         if(bulletY[i] > height) {
           bulletY[i] = 50;
           bulletActive[i] = false;
+          bulletcount++;
         }
       } else { 
       }
@@ -151,6 +187,12 @@ public class Sketch1 extends PApplet {
     for(int i = 0; i < lives; i++) {
       imgLives.resize(75, 75);
       image(imgLives, 350 + 30*i, 0);
+    }
+
+    
+
+    for(int i = 0; i < bulletcount; i++) {
+      image(imgBulletIndicator, 400 + 20*i, 20);
     }
 
     if (boolRightArrowPressed) {
@@ -212,8 +254,6 @@ public class Sketch1 extends PApplet {
     if(keyCode == LEFT) {
       boolLeftArrowPressed = false;
     }
-
-
   }
 
   public void keyTyped() {
@@ -222,6 +262,7 @@ public class Sketch1 extends PApplet {
         if(bulletActive[i] == false) {
           bulletActive[i] = true;
           bulletX[i] = fltGunX + 15;
+          bulletcount--;
           break;
         }
       }
