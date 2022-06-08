@@ -281,6 +281,7 @@ public class Sketch extends PApplet {
     if(key =='p' && boolRemoveBulletPowerupPickup == true) {
       boolRemoveBulletPowerupActive = true;
       boolRemoveBulletPowerupPickup = false;
+      bulletcount = 4;
     }
     if(keyCode == RIGHT) {
       boolRightArrowPressed = true;
