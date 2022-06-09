@@ -55,9 +55,10 @@ public class Sketch2 extends PApplet {
   int CoinY = 50;
   float PowerUpX;
   int PowerUpY = 50;
-  int savedTime;
-  int totalTimeNoBulletPowerup = 10000;
-  int totalTimeCoin = 5000;
+  int savedTimeNoBulletPowerup;
+  int savedTimeCoin;
+  int totalTimeNoBulletPowerup = 15000;
+  int totalTimeCoin = 10000;
 
   /**
    * Called once at the beginning of execution, put your size all in this method
@@ -95,8 +96,8 @@ public class Sketch2 extends PApplet {
       bulletActive[i] = false;
     }
 
-    savedTime = millis();
-
+    savedTimeCoin = millis();
+    savedTimeNoBulletPowerup = millis();
   }
 
   /**
@@ -241,19 +242,19 @@ public class Sketch2 extends PApplet {
       fltPlayerX = 80;
     }
 
-    int passedTime = millis() - savedTime;
+    int passedTimeNoBulletPowerup = millis() - savedTimeNoBulletPowerup;
+    int passedTimeCoin = millis() - savedTimeCoin;
 
-
-    if (passedTime > totalTimeNoBulletPowerup){
+    if (passedTimeNoBulletPowerup > totalTimeNoBulletPowerup){
       PowerUpX = random(270) + 80;
       boolRemoveBulletPowerupSpawn = true;
-      savedTime = millis();
+      savedTimeNoBulletPowerup = millis();
     }
     
-    if (passedTime > totalTimeCoin){
+    if (passedTimeCoin > totalTimeCoin){
       CoinX = random(270) + 80;
       boolCoinSpawn = true;
-      savedTime = millis();
+      savedTimeCoin = millis();
     }
 
     if (boolRemoveBulletPowerupSpawn == true) {
@@ -263,7 +264,7 @@ public class Sketch2 extends PApplet {
     }
     
     if (boolCoinSpawn == true) {
-      imgCoin.resize(100, 100);
+      imgCoin.resize(25, 25);
       image(imgCoin, CoinX, CoinY);
       CoinY += PowerUpSpeed;
     }
@@ -316,7 +317,7 @@ public class Sketch2 extends PApplet {
     if(key == 'a') {
       boolLeftPressed = true;
     }
-    if(key =='p' && boolRemoveBulletPowerupPickup == true) {
+    if(key =='q' && boolRemoveBulletPowerupPickup == true) {
       boolRemoveBulletPowerupActive = true;
       boolRemoveBulletPowerupPickup = false;
     }
@@ -345,7 +346,7 @@ public class Sketch2 extends PApplet {
     if(keyCode == LEFT) {
       boolLeftArrowPressed = false;
     }
-    if(key =='p'){
+    if(key =='q'){
       boolRemoveBulletPowerupActive = false;
     }
   }
