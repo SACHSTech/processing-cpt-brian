@@ -9,6 +9,7 @@ import processing.core.PImage;
 public class Sketch1 extends PApplet {
   PImage imgNoBulletPowerup;
   PImage imgNoBulletPowerupIcon;
+  PImage imgCoin;
   PImage imgGameBackground;
   PImage imgPlayerCar;
   PImage imgStartscreen;
@@ -20,13 +21,14 @@ public class Sketch1 extends PApplet {
   boolean boolRemoveBulletPowerupSpawn = false;
   boolean boolRemoveBulletPowerupPickup = false;
   boolean boolRemoveBulletPowerupActive = false;
+  boolean boolCoinSpawn = false;
+  boolean boolCoinPickup = false;
   final int MENUSCREEN = 0;
   final int INSTRUCTIONSCREEN = 1;
   final int GAMESCREEN = 2;
   final int TANKWINSCREEN = 3;
-  final int CARWINSCREEN = 4; 
+  final int CARWINSCREEN = 4;
   int screenState = MENUSCREEN;
-  int coins = 0;
 
   float fltGunX;
   float fltGunY;
@@ -49,10 +51,16 @@ public class Sketch1 extends PApplet {
 
   int PowerUpSpeed = 3;
 
+  int Points = 0;
+
+  float CoinX;
+  int CoinY = 50;
   float PowerUpX;
   int PowerUpY = 50;
-  int savedTime;
-  int totalTime = 10000;
+  int savedTimeNoBulletPowerup;
+  int savedTimeCoin;
+  int totalTimeNoBulletPowerup = 15000;
+  int totalTimeCoin = 10000;
 
   /**
    * Called once at the beginning of execution, put your size all in this method
@@ -68,7 +76,7 @@ public class Sketch1 extends PApplet {
    */
   public void setup() {
     background(0, 0, 0);
-    imgCarWin = loadImage("carwin.png");
+
     imgBulletIndicator = loadImage("bulletindicator.png");
     imgGameBackground  = loadImage("background-1_0.png");
     imgPlayerCar = loadImage("car_red_1.png");
@@ -80,6 +88,8 @@ public class Sketch1 extends PApplet {
     imgTankWin = loadImage("TANKWIN.png");
     imgNoBulletPowerup = loadImage("NoBulletPowerup.png");
     imgNoBulletPowerupIcon = loadImage("NoBulletPowerupICON.png");
+    imgCoin = loadImage("Coin.png");
+    imgCarWin = loadImage("carwin.png");
 
 
     for(int i = 0; i < bulletY.length; i++) {
@@ -89,8 +99,8 @@ public class Sketch1 extends PApplet {
       bulletActive[i] = false;
     }
 
-    savedTime = millis();
-
+    savedTimeCoin = millis();
+    savedTimeNoBulletPowerup = millis();
   }
 
   /**
@@ -105,7 +115,7 @@ public class Sketch1 extends PApplet {
       drawGame();
     } else if (screenState == TANKWINSCREEN){
       drawTankWinScreen();
-    } else if(screenState == CARWINSCREEN) {
+    } else if (screenState == CARWINSCREEN) {
       drawCarWinScreen();
     }
      else {
@@ -113,20 +123,6 @@ public class Sketch1 extends PApplet {
     }
   }
 
-
-  public void drawCarWinScreen() {
-
-    imgCarWin.resize(400, 500);
-
-    image(imgCarWin, 50, 0);
-
-    if(keyPressed) {
-      if(key == 'c') {
-        screenState = GAMESCREEN;
-      }
-    }
-
-  }
   public void drawTankWinScreen() {
     imgTankWin.resize(400, 500);
     image(imgTankWin, 50, 0);
@@ -135,6 +131,17 @@ public class Sketch1 extends PApplet {
         screenState = GAMESCREEN;
       }
     }
+  }
+
+  public void drawCarWinScreen() {
+    imgCarWin.resize(400, 500);
+    image(imgCarWin, 50, 0);
+    if(keyPressed) {
+      if(key == 'c') {
+        screenState = GAMESCREEN;
+      }
+    }
+
   }
 
   public void drawInstruction(){
@@ -170,13 +177,40 @@ public class Sketch1 extends PApplet {
       lives = 3;
       fltGunX = 250;
       fltPlayerX = 250;
+      Points = 0;
       for(int i = 0; i < bulletY.length; i++) {
       bulletY[i] = 55;
     }
     for(int i = 0; i < bulletActive.length; i++) {
       bulletActive[i] = false;
     }
+    boolRemoveBulletPowerupActive = false;
+    boolCoinSpawn = false;
     bulletcount = 4;
+    savedTimeCoin = millis();
+    savedTimeNoBulletPowerup = millis();
+    }
+
+    if(Points == 3) {
+      screenState = CARWINSCREEN;
+      lives = 3;
+      fltGunX = 250;
+      fltPlayerX = 250;
+      Points = 0;
+
+      for(int i = 0; i < bulletY.length; i++) {
+        bulletY[i] = 55;
+      }
+
+      for(int i = 0; i < bulletActive.length; i++) {
+        bulletActive[i] = false;
+      }
+
+      boolRemoveBulletPowerupActive = false;
+      boolCoinSpawn = false;
+      savedTimeCoin = millis();
+      savedTimeNoBulletPowerup = millis();
+      bulletcount = 4;
     }
 
 
@@ -220,6 +254,10 @@ public class Sketch1 extends PApplet {
       image(imgLives, 350 + 30*i, 0);
     }
 
+    for(int i = 0; i < Points; i++) {
+      image(imgCoin, 395 + 30 * i, 80);
+    }
+
     
 
     for(int i = 0; i < bulletcount; i++) {
@@ -251,14 +289,19 @@ public class Sketch1 extends PApplet {
       fltPlayerX = 80;
     }
 
-    int passedTime = millis() - savedTime;
+    int passedTimeNoBulletPowerup = millis() - savedTimeNoBulletPowerup;
+    int passedTimeCoin = millis() - savedTimeCoin;
 
-
-    if (passedTime > totalTime){
+    if (passedTimeNoBulletPowerup > totalTimeNoBulletPowerup){
       PowerUpX = random(270) + 80;
-      System.out.println("now");
       boolRemoveBulletPowerupSpawn = true;
-      savedTime = millis();
+      savedTimeNoBulletPowerup = millis();
+    }
+    
+    if (passedTimeCoin > totalTimeCoin){
+      CoinX = random(270) + 80;
+      boolCoinSpawn = true;
+      savedTimeCoin = millis();
     }
 
     if (boolRemoveBulletPowerupSpawn == true) {
@@ -266,9 +309,21 @@ public class Sketch1 extends PApplet {
       image(imgNoBulletPowerup, PowerUpX, PowerUpY);
       PowerUpY += PowerUpSpeed;
     }
+    
+    if (boolCoinSpawn == true) {
+      imgCoin.resize(25, 25);
+      image(imgCoin, CoinX, CoinY);
+      CoinY += PowerUpSpeed;
+    }
+  
     if (PowerUpY > height){
       boolRemoveBulletPowerupSpawn = false;
       PowerUpY = 50;  
+    }
+
+    if (CoinY > height){
+      boolRemoveBulletPowerupSpawn = false;
+      CoinY = 50;  
     }
 
     if (dist(PowerUpX - 25, PowerUpY, fltPlayerX, fltPlayerY) < 30){
@@ -277,9 +332,21 @@ public class Sketch1 extends PApplet {
       PowerUpY = 50;  
     }
 
+    if (dist(CoinX - 25, CoinY, fltPlayerX, fltPlayerY) < 30){
+      boolCoinPickup = true;
+      boolCoinSpawn = false;
+      CoinY = 50;  
+    }
+
     if (boolRemoveBulletPowerupPickup){
       imgNoBulletPowerupIcon.resize(50, 50);
       image(imgNoBulletPowerupIcon, 425, 450);
+    }
+
+    if (boolCoinPickup){
+      Points = Points + 1;
+      System.out.println("You have " + Points + " points.");
+      boolCoinPickup = false;
     }
 
     if (boolRemoveBulletPowerupActive == true){
@@ -297,7 +364,7 @@ public class Sketch1 extends PApplet {
     if(key == 'a') {
       boolLeftPressed = true;
     }
-    if(key =='p' && boolRemoveBulletPowerupPickup == true) {
+    if(key =='q' && boolRemoveBulletPowerupPickup == true) {
       boolRemoveBulletPowerupActive = true;
       boolRemoveBulletPowerupPickup = false;
     }
@@ -326,7 +393,7 @@ public class Sketch1 extends PApplet {
     if(keyCode == LEFT) {
       boolLeftArrowPressed = false;
     }
-    if(key =='p'){
+    if(key =='q'){
       boolRemoveBulletPowerupActive = false;
     }
   }
