@@ -293,13 +293,13 @@ public class Sketch extends PApplet {
     int passedTimeCoin = millis() - savedTimeCoin;
 
     if (passedTimeNoBulletPowerup > totalTimeNoBulletPowerup){
-      PowerUpX = random(270) + 80;
+      PowerUpX = calculatecoinposition(270);
       boolRemoveBulletPowerupSpawn = true;
       savedTimeNoBulletPowerup = millis();
     }
     
     if (passedTimeCoin > totalTimeCoin){
-      CoinX = random(270) + 80;
+      CoinX =  calculatecoinposition(270);
       boolCoinSpawn = true;
       savedTimeCoin = millis();
     }
@@ -410,4 +410,9 @@ public class Sketch extends PApplet {
       }
     }
   }
+
+
+  public float calculatecoinposition(float i) {
+    return (random(i) + 80);
+}
 }
