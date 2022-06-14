@@ -269,7 +269,7 @@ public class Sketch2 extends PApplet {
     for(int i = 0; i < Points; i++) {
       image(imgCoin, 395 + 30 * i, 80);
     }
-
+ 
     
 
     for(int i = 0; i < bulletcount; i++) {
