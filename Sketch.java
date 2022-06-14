@@ -7,6 +7,8 @@ import processing.core.PImage;
  * This is noah's file
  */
 public class Sketch extends PApplet {
+
+  //all variable declaration + images 
   PImage imgNoBulletPowerup;
   PImage imgNoBulletPowerupIcon;
   PImage imgCoin;
@@ -77,6 +79,7 @@ public class Sketch extends PApplet {
   public void setup() {
     background(0, 0, 0);
 
+    //loading all images
     imgBulletIndicator = loadImage("bulletindicator.png");
     imgGameBackground  = loadImage("background-1_0.png");
     imgPlayerCar = loadImage("car_red_1.png");
@@ -92,6 +95,7 @@ public class Sketch extends PApplet {
     imgCarWin = loadImage("carwin.png");
 
 
+    //for loops that set up bullets, placing at top of screen and setting inactive
     for(int i = 0; i < bulletY.length; i++) {
       bulletY[i] = 55;
     }
@@ -99,6 +103,7 @@ public class Sketch extends PApplet {
       bulletActive[i] = false;
     }
 
+    //resetting timers 
     savedTimeCoin = millis();
     savedTimeNoBulletPowerup = millis();
   }
@@ -123,19 +128,32 @@ public class Sketch extends PApplet {
     }
   }
 
+  /**
+   * This method draws the screen for when the tank wins 
+   */
   public void drawTankWinScreen() {
+
     imgTankWin.resize(400, 500);
     image(imgTankWin, 50, 0);
     if(keyPressed) {
+
+      //sets screenstate to game if continue is pressed
       if(key == 'c') {
         screenState = GAMESCREEN;
       }
     }
   }
 
+
+
+  /**
+   * Method to draw the screen for when the car wins 
+   */
   public void drawCarWinScreen() {
     imgCarWin.resize(400, 500);
     image(imgCarWin, 50, 0);
+
+    //returns to the game screen 
     if(keyPressed) {
       if(key == 'c') {
         screenState = GAMESCREEN;
@@ -144,35 +162,53 @@ public class Sketch extends PApplet {
 
   }
 
+  /**
+   * Instruction screen
+   */
   public void drawInstruction(){
     imgInstructionscreen.resize(400,500);
     image(imgInstructionscreen, 50, 0);
     if (keyPressed){
+
+      //continue botton
       if(key == 'c') {
         screenState = GAMESCREEN;
       } 
     }
   }
 
+  
+   /**
+    * Method for the menu
+    */
   public void drawMenu(){
     imgStartscreen.resize(400,500);
     image(imgStartscreen, 50, 0);
     if (mousePressed){
+
+      //logic for clicking the button
       if (dist(250, 335, mouseX, mouseY) < 105){
       screenState = INSTRUCTIONSCREEN;
       }
     }
   }
 
+  /**
+   * Main game drawing method
+   */
   public void drawGame(){
     imgGameBackground.resize(500, 500);
+
+    //draws background, tank and car 
     image(imgGameBackground, 0, 0);
     
     image(imgTank, fltGunX, fltGunY);
     imgPlayerCar.resize(50, 100);
     image(imgPlayerCar, fltPlayerX, fltPlayerY);
 
+    //if lives run out
     if(lives == 0 ) {
+      //resets game and makes tank win 
       screenState = TANKWINSCREEN;
       lives = 3;
       fltGunX = 250;
@@ -191,7 +227,10 @@ public class Sketch extends PApplet {
     savedTimeNoBulletPowerup = millis();
     }
 
+    //if car collects all points 
     if(Points == 3) {
+      
+      //resets game and makes car win 
       screenState = CARWINSCREEN;
       lives = 3;
       fltGunX = 250;
@@ -214,8 +253,10 @@ public class Sketch extends PApplet {
     }
 
 
+    //for loop to draw bullets repeatedly
     for(int i = 0; i < bulletActive.length; i++) {
 
+      //if bullet comes close to car, collision detection 
       if(bulletActive[i] == true) {
         if(dist(bulletX[i]-15, bulletY[i]-30, fltPlayerX, fltPlayerY) <=30) {
           bulletY[i] = 50;
@@ -231,10 +272,9 @@ public class Sketch extends PApplet {
         continue;
       }
 
-      
     }
 
-
+    //draws the bullets, resetting when they reach the bottom of the page 
     for(int i = 0; i < bulletX.length; i++) {
       if(bulletActive[i] == true) {
         image(imgBullet, bulletX[i], bulletY[i]);
@@ -249,6 +289,7 @@ public class Sketch extends PApplet {
       }
     }
 
+    //these for loops draw the live, bullet, and point indicators
     for(int i = 0; i < lives; i++) {
       imgLives.resize(75, 75);
       image(imgLives, 350 + 30*i, 0);
@@ -258,12 +299,11 @@ public class Sketch extends PApplet {
       image(imgCoin, 395 + 30 * i, 80);
     }
 
-    
-
     for(int i = 0; i < bulletcount; i++) {
       image(imgBulletIndicator, 400 + 20*i, 20);
     }
 
+    //the following if statements handle input
     if (boolRightArrowPressed) {
       fltGunX = fltGunX + 2;
     }
@@ -289,6 +329,7 @@ public class Sketch extends PApplet {
       fltPlayerX = 80;
     }
 
+    //timers and the following if statements handle timed events 
     int passedTimeNoBulletPowerup = millis() - savedTimeNoBulletPowerup;
     int passedTimeCoin = millis() - savedTimeCoin;
 
@@ -304,6 +345,8 @@ public class Sketch extends PApplet {
       savedTimeCoin = millis();
     }
 
+
+    //the following controls powerup spawning and use 
     if (boolRemoveBulletPowerupSpawn == true) {
       imgNoBulletPowerup.resize(25, 25);
       image(imgNoBulletPowerup, PowerUpX, PowerUpY);
@@ -376,6 +419,7 @@ public class Sketch extends PApplet {
     }
   }
 
+
   public void keyReleased(){
     if(key == 'd') {
       boolRightPressed = false;
@@ -412,7 +456,13 @@ public class Sketch extends PApplet {
   }
 
 
+  /**
+   * 
+   * 
+   * @param i input value to limit for the randomly generated number
+   * @return returns a random position used for placing coins and powerups
+   */
   public float calculatecoinposition(float i) {
     return (random(i) + 80);
-}
+  }
 }
