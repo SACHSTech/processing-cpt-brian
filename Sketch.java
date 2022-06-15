@@ -1,12 +1,12 @@
 import java.util.ArrayList;
-
 import processing.core.PApplet;
 import processing.core.PImage;
 
-
  
 /**
- * This is noah's file
+ * This is The main file 
+ * @author Noah Lin
+ * @author Brayden Fung
  */
 public class Sketch extends PApplet {
 
@@ -115,15 +115,16 @@ public class Sketch extends PApplet {
       bulletY[i] = 55;
     }
 
-
-      Boolean bullet1status = new Boolean(false);
-      bulletActive.add(bullet1status);
-      Boolean bullet2status = new Boolean(false);
-      bulletActive.add(bullet2status);
-      Boolean bullet3status = new Boolean(false);
-      bulletActive.add(bullet3status);
-      Boolean bullet4status = new Boolean(false);
-      bulletActive.add(bullet4status);
+      
+     
+      
+      //for loop that configures the bulletstatus array for a dynamic number of bullets based on the amounts defined above
+      for(int i =0; i < bulletY.length; i++) {
+        Boolean bulletstatus = new Boolean(false);
+        bulletActive.add(bulletstatus);
+      }
+      
+      
 
 
    
@@ -140,6 +141,8 @@ public class Sketch extends PApplet {
    * Called repeatedly, anything drawn to the screen goes here
    */
   public void draw() {
+
+    //series of nested if statements that alows different screenstates to be displayed
     if (screenState == MENUSCREEN) {
       drawMenu();
     } else if (screenState == INSTRUCTIONSCREEN) {
@@ -152,6 +155,7 @@ public class Sketch extends PApplet {
       drawCarWinScreen();
     }
      else {
+       //crash statement
       System.out.println("Something went wrong!");
     }
   }
@@ -469,6 +473,11 @@ public class Sketch extends PApplet {
     }
   }
 
+  /*
+   * 
+   * The following code is executed when a key is pressed 
+   * 
+   */
   public void keyPressed() {
     if(key == 'd') {
       boolRightPressed = true;
@@ -489,6 +498,9 @@ public class Sketch extends PApplet {
   }
 
 
+  /**
+   * The following code is executed when a key is released
+   */
   public void keyReleased(){
     if(key == 'd') {
       boolRightPressed = false;
@@ -511,6 +523,9 @@ public class Sketch extends PApplet {
     }
   }
 
+  /*
+   * The following code is exexuted whenever a key is typed, meaning it is pressed and released once 
+   */
   public void keyTyped() {
     if(key == ' ') {
       for(int i = 0; i < bulletActive.size(); i++) {
@@ -527,9 +542,9 @@ public class Sketch extends PApplet {
 
   /**
    * 
-   * 
+   * This method is used to calcualte random positions used for placing coins and powerups
    * @param i input value to limit for the randomly generated number
-   * @return returns a random position used for placing coins and powerups
+   * @return returns the generated position 
    */
   public float calculatecoinposition(float i) {
     return (random(i) + 80);
