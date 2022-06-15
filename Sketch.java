@@ -188,6 +188,9 @@ public class Sketch extends PApplet {
     //returns to the game screen 
     if(keyPressed) {
       if(key == 'c') {
+          savedTimeCoin = millis();
+          savedTimeNoBulletPowerup = millis();
+          savedTimeSpeedPowerup = millis();
         screenState = GAMESCREEN;
       }
     }
@@ -204,6 +207,10 @@ public class Sketch extends PApplet {
 
       //continue botton
       if(key == 'c') {
+        //reset timers
+        savedTimeCoin = millis();
+        savedTimeNoBulletPowerup = millis();
+        savedTimeSpeedPowerup = millis();
         screenState = GAMESCREEN;
       } 
     }
@@ -250,16 +257,21 @@ public class Sketch extends PApplet {
       bulletY[i] = 55;
     }
 
-    //sets every bullet to false 
-    for(int i = 0; i < bulletActive.size(); i++) {
-      bulletActive.set(i, false);
-    }
-
+    powerupcount = 0;
+    boolSpeedPowerupSpawn = false; 
+    boolSpeedPowerupPickup = false;
+    boolRemoveBulletPowerupActive = false;
+    boolRemoveBulletPowerupPickup = false;
     boolRemoveBulletPowerupActive = false;
     boolCoinSpawn = false;
     bulletcount = 4;
     savedTimeCoin = millis();
+    savedTimeSpeedPowerup = millis();
     savedTimeNoBulletPowerup = millis();
+      //sets every bullet to false 
+      for(int i = 0; i < bulletActive.size(); i++) {
+        bulletActive.set(i, false);
+      }
     }
 
     //if car collects all points 
@@ -272,20 +284,23 @@ public class Sketch extends PApplet {
       fltPlayerX = 250;
       Points = 0;
 
+      powerupcount = 0;
+      boolSpeedPowerupSpawn = false; 
+      boolSpeedPowerupPickup = false;
+      boolRemoveBulletPowerupActive = false;
+      boolCoinSpawn = false;
+      savedTimeCoin = millis();
+      savedTimeSpeedPowerup = millis();
+      savedTimeNoBulletPowerup = millis();
+      bulletcount = 4;
       for(int i = 0; i < bulletY.length; i++) {
         bulletY[i] = 55;
       }
 
       //sets every bullet to false 
-    for(int i = 0; i < bulletActive.size(); i++) {
+      for(int i = 0; i < bulletActive.size(); i++) {
       bulletActive.set(i, false);
-    }
-
-      boolRemoveBulletPowerupActive = false;
-      boolCoinSpawn = false;
-      savedTimeCoin = millis();
-      savedTimeNoBulletPowerup = millis();
-      bulletcount = 4;
+      }
     }
 
 
@@ -327,7 +342,7 @@ public class Sketch extends PApplet {
           bulletcount++;
         }
       } else { 
-      }
+        }
     }
 
     //these for loops draw the live, bullet, and point indicators
