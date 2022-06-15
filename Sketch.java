@@ -119,16 +119,12 @@ public class Sketch extends PApplet {
      
       
       //for loop that configures the bulletstatus array for a dynamic number of bullets based on the amounts defined above
-      for(int i =0; i < bulletY.length; i++) {
-        Boolean bulletstatus = new Boolean(false);
-        bulletActive.add(bulletstatus);
-      }
+    for(int i = 0; i < bulletY.length; i++) {
+     Boolean bulletstatus = new Boolean(false);
+      bulletActive.add(bulletstatus);
+    }
       
-      
-
-
-   
-
+    
   
 
     //resetting timers 
@@ -172,6 +168,9 @@ public class Sketch extends PApplet {
       //sets screenstate to game if continue is pressed
       if(key == 'c') {
         screenState = GAMESCREEN;
+        savedTimeCoin = millis();
+        savedTimeNoBulletPowerup = millis();
+        savedTimeSpeedPowerup = millis();
       }
     }
   }
