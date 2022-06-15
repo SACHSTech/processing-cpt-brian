@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import processing.core.PApplet;
 import processing.core.PImage;
 
@@ -50,7 +52,7 @@ public class Sketch extends PApplet {
   int bulletcount = 4;
   float[] bulletX = new float[4];
   float[] bulletY = new float[4];
-  boolean[] bulletActive = new boolean[4];
+  ArrayList<Boolean> bulletActive = new ArrayList<Boolean>();
 
   float carSpeed = 3;
 
@@ -112,9 +114,21 @@ public class Sketch extends PApplet {
     for(int i = 0; i < bulletY.length; i++) {
       bulletY[i] = 55;
     }
-    for(int i = 0; i < bulletActive.length; i++) {
-      bulletActive[i] = false;
-    }
+
+
+      Boolean bullet1status = new Boolean(false);
+      bulletActive.add(bullet1status);
+      Boolean bullet2status = new Boolean(false);
+      bulletActive.add(bullet2status);
+      Boolean bullet3status = new Boolean(false);
+      bulletActive.add(bullet3status);
+      Boolean bullet4status = new Boolean(false);
+      bulletActive.add(bullet4status);
+
+
+   
+
+  
 
     //resetting timers 
     savedTimeCoin = millis();
@@ -221,7 +235,7 @@ public class Sketch extends PApplet {
     image(imgPlayerCar, fltPlayerX, fltPlayerY);
 
     //if lives run out
-    if(lives == 0 ) {
+    if(lives <= 0 ) {
       //resets game and makes tank win 
       screenState = TANKWINSCREEN;
       lives = 3;
@@ -231,9 +245,12 @@ public class Sketch extends PApplet {
       for(int i = 0; i < bulletY.length; i++) {
       bulletY[i] = 55;
     }
-    for(int i = 0; i < bulletActive.length; i++) {
-      bulletActive[i] = false;
+
+    //sets every bullet to false 
+    for(int i = 0; i < bulletActive.size(); i++) {
+      bulletActive.set(i, false);
     }
+
     boolRemoveBulletPowerupActive = false;
     boolCoinSpawn = false;
     bulletcount = 4;
@@ -242,7 +259,7 @@ public class Sketch extends PApplet {
     }
 
     //if car collects all points 
-    if(Points == 3) {
+    if(Points >= 3) {
       
       //resets game and makes car win 
       screenState = CARWINSCREEN;
@@ -255,9 +272,10 @@ public class Sketch extends PApplet {
         bulletY[i] = 55;
       }
 
-      for(int i = 0; i < bulletActive.length; i++) {
-        bulletActive[i] = false;
-      }
+      //sets every bullet to false 
+    for(int i = 0; i < bulletActive.size(); i++) {
+      bulletActive.set(i, false);
+    }
 
       boolRemoveBulletPowerupActive = false;
       boolCoinSpawn = false;
@@ -268,14 +286,15 @@ public class Sketch extends PApplet {
 
 
     //for loop to draw bullets repeatedly
-    for(int i = 0; i < bulletActive.length; i++) {
+    
+    for(int i = 0; i < bulletActive.size(); i++) {
 
       //if bullet comes close to car, collision detection 
-      if(bulletActive[i] == true) {
+      if(bulletActive.get(i) == true) {
         if(dist(bulletX[i]-15, bulletY[i]-30, fltPlayerX, fltPlayerY) <=30) {
           bulletY[i] = 50;
 
-          bulletActive[i] = false;
+          bulletActive.set(i, false);
           bulletcount++;
           lives--;
 
@@ -294,13 +313,13 @@ public class Sketch extends PApplet {
     }
     //draws the bullets, resetting when they reach the bottom of the page 
     for(int i = 0; i < bulletX.length; i++) {
-      if(bulletActive[i] == true) {
+      if(bulletActive.get(i) == true) {
         image(imgBullet, bulletX[i], bulletY[i]);
         bulletY[i]+=5;
 
         if(bulletY[i] > height) {
           bulletY[i] = 50;
-          bulletActive[i] = false;
+          bulletActive.set(i, false);
           bulletcount++;
         }
       } else { 
@@ -443,8 +462,8 @@ public class Sketch extends PApplet {
     }
 
     if (boolRemoveBulletPowerupActive == true){
-      for(int i = 0; i < bulletActive.length; i++) {
-        bulletActive[i] = false;
+      for(int i = 0; i < bulletActive.size(); i++) {
+        bulletActive.set(i, false);
         bulletY[i] = 50;
       }
     }
@@ -494,9 +513,9 @@ public class Sketch extends PApplet {
 
   public void keyTyped() {
     if(key == ' ') {
-      for(int i = 0; i < bulletActive.length; i++) {
-        if(bulletActive[i] == false) {
-          bulletActive[i] = true;
+      for(int i = 0; i < bulletActive.size(); i++) {
+        if(bulletActive.get(i) == false) {
+          bulletActive.set(i, true);
           bulletX[i] = fltGunX + 15;
           bulletcount--;
           break;
@@ -515,4 +534,7 @@ public class Sketch extends PApplet {
   public float calculatecoinposition(float i) {
     return (random(i) + 80);
   }
+
+
+ 
 }
