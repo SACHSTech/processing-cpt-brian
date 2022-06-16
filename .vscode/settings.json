@@ -1,0 +1,6 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "/Users/noah/Downloads/mac_core.jar"
+    ]
+}
