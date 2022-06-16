@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import processing.core.PApplet;
 import processing.core.PImage;
 
- 
+
 /**
  * This is The main file 
  * @author Noah Lin
@@ -256,6 +256,7 @@ public class Sketch extends PApplet {
       bulletY[i] = 55;
     }
 
+    //sets booleans for if the power up spawns, is picked up, or is used
     powerupcount = 0;
     boolSpeedPowerupSpawn = false; 
     boolSpeedPowerupPickup = false;
@@ -324,7 +325,7 @@ public class Sketch extends PApplet {
       }
 
     }
-
+    //draw speed indicators
     imgspeedindicator.resize(40, 40);
     for(int i = 0; i < powerupcount; i++) {
       image(imgspeedindicator, 20 + 30*i, 450);
@@ -389,19 +390,19 @@ public class Sketch extends PApplet {
     int passedTimeCoin = millis() - savedTimeCoin;
     int passedTimeSpeedPowoerup = millis() - savedTimeSpeedPowerup;
 
-
+    //spawns the powerup if the correct time has passed, then reset the timer
     if (passedTimeNoBulletPowerup > totalTimeNoBulletPowerup){
       PowerUpX = calculatecoinposition(270);
       boolRemoveBulletPowerupSpawn = true;
       savedTimeNoBulletPowerup = millis();
     }
-    
+    //spawns the coin if the correct time has passed, then reset the timer
     if (passedTimeCoin > totalTimeCoin){
       CoinX =  calculatecoinposition(270);
       boolCoinSpawn = true;
       savedTimeCoin = millis();
     }
-
+    //spawns the powerup if the correct time has passed, then reset the timer
     if (passedTimeSpeedPowoerup > totalTimeSpeedPowerup){
       SpeedPowerupX = random(270) + 80;
       boolSpeedPowerupSpawn = true;
@@ -416,69 +417,69 @@ public class Sketch extends PApplet {
       PowerUpY += PowerUpSpeed;
     }
     
+    //the following controls coin spawning and use 
     if (boolCoinSpawn == true) {
       imgCoin.resize(25, 25);
       image(imgCoin, CoinX, CoinY);
       CoinY += PowerUpSpeed;
     } 
-  
+    //the following controls powerup spawning and use 
     if (boolSpeedPowerupSpawn == true) {
       imgSpeedPowerup.resize(25, 25);
       image(imgSpeedPowerup, SpeedPowerupX, SpeedPowerUpY);
       SpeedPowerUpY += PowerUpSpeed;
     }
-
+    //sets restriction so the powerup resets if it goes out of frame
     if (PowerUpY > height){
       boolRemoveBulletPowerupSpawn = false;
       PowerUpY = 50;  
     }
-
+    //sets restriction so the coin resets if it goes out of frame
     if (CoinY > height){
       boolCoinSpawn = false;
       CoinY = 50;  
     }
-
+    //sets restriction so the powerup resets if it goes out of frame
     if (SpeedPowerUpY > height){
       boolSpeedPowerupSpawn = false;
       SpeedPowerUpY = 50;  
     }
-
+    //the following controls when the powerup touches the car
     if (dist(PowerUpX - 25, PowerUpY, fltPlayerX, fltPlayerY) < 30){
       boolRemoveBulletPowerupPickup = true;
       boolRemoveBulletPowerupSpawn = false;
       PowerUpY = 50;  
     }
-
+    //the following controls when the coin touches the car
     if (dist(CoinX - 25, CoinY, fltPlayerX, fltPlayerY) < 30){
       boolCoinPickup = true;
       boolCoinSpawn = false;
       CoinY = 50;  
     }
-
+    //the following controls when the powerup touches the car
     if (dist(SpeedPowerupX - 25, SpeedPowerUpY, fltPlayerX, fltPlayerY) < 30){
       boolSpeedPowerupPickup = true;
       boolSpeedPowerupSpawn = false;
       powerupcount = powerupcount + 1; 
       SpeedPowerUpY = 50;  
     }
-
+    //draws an icon if the powerup is picked up
     if (boolRemoveBulletPowerupPickup){
       imgNoBulletPowerupIcon.resize(50, 50);
       image(imgNoBulletPowerupIcon, 425, 450);
     }
-
+    //point system if the car touches the coin
     if (boolCoinPickup){
       Points = Points + 1;
       System.out.println("You have " + Points + " points.");
       boolCoinPickup = false;
     }
-
+    //increases the car speed if the car touches the powerup
     if (boolSpeedPowerupPickup){
-
       carSpeed = carSpeed + 1;
       boolSpeedPowerupPickup = false;
     }
-
+    //deletes bullets if powerup is used
     if (boolRemoveBulletPowerupActive == true){
       for(int i = 0; i < bulletActive.size(); i++) {
         bulletActive.set(i, false);
@@ -563,7 +564,4 @@ public class Sketch extends PApplet {
   public float calculatecoinposition(float i) {
     return (random(i) + 80);
   }
-
-
- 
 }
